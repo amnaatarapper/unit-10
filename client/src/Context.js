@@ -11,7 +11,6 @@ export class Provider extends React.Component {
   }
 
   render() {
-    
     const value = {
       data: this.dataworker,
     }

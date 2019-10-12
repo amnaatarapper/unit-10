@@ -4,10 +4,24 @@ import Course from './Course';
 
 class Courses extends React.Component {
 
+  state= {
+    courses: [],
+  }
+
+  componentDidMount() {
+    const { context } = this.props;
+    const getCourses = context.data.getCourses();
+    
+    Promise.all([getCourses])
+    .then(courses => this.setState({courses: courses[0].courses}))
+    .catch(error => console.error(error));
+  }
+
   render() {
     return (
       <div className="bounds">
-        <Course />
+        
+        {this.state.courses.map(course => <Course key={course.id} title={course.title} />)}
         
         <div className="grid-33">
           <a className="course--module course--add--module" href="create-course.html">
