@@ -20,7 +20,7 @@ class CreateCourse extends React.Component {
                     <div className="grid-66">
                       <div className="course--header">
                         <h4 className="course--label">Course</h4>
-                        <div><input readOnly id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
+                        <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
                             value=""/></div>
                         <p>By Joe Smith</p>
                       </div>
@@ -33,7 +33,7 @@ class CreateCourse extends React.Component {
                         <ul className="course--stats--list">
                           <li className="course--stats--list--item">
                             <h4>Estimated Time</h4>
-                            <div><input readOnly id="estimatedTime" name="estimatedTime" type="text" className="course--time--input"
+                            <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input"
                                 placeholder="Hours" value=""/></div>
                           </li>
                           <li className="course--stats--list--item">
