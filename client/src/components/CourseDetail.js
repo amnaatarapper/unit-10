@@ -45,7 +45,7 @@ class CourseDetail extends React.Component {
       <>
         <div className="actions--bar">
           <div className="bounds">
-            <div className="grid-100"><span><a className="button" href="update-course.html">Update Course</a><a className="button" href="#">Delete Course</a></span><a
+            <div className="grid-100"><span><a className="button" href="#">Update Course</a><a className="button" href="#">Delete Course</a></span><a
                 className="button button-secondary" href="/">Return to List</a></div>
           </div>
         </div>

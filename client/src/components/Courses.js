@@ -28,7 +28,7 @@ class Courses extends React.Component {
         {this.state.courses.map(course => <Course key={course.id} title={course.title} id={course.id}/>)}
 
         <div className="grid-33">
-          <a className="course--module course--add--module" href="create-course.html">
+          <a className="course--module course--add--module" href="/courses/create">
             <h3 className="course--add--title">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 viewBox="0 0 13 13" className="add">
