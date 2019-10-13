@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import baseURL from '../baseURL';
 
 import Course from './Course';
 
@@ -8,21 +10,23 @@ class Courses extends React.Component {
     courses: [],
   }
 
-  componentDidMount() {
-    const { context } = this.props;
-    const getCourses = context.data.getCourses();
-    
-    Promise.all([getCourses])
-    .then(courses => this.setState({courses: courses[0].courses}))
-    .catch(error => console.error(error));
+  async componentDidMount() {
+
+    await axios.get(baseURL.apiBaseUrl + '/courses')
+      .then( response => { 
+        this.setState({ courses: response.data.courses})
+      })
+      .catch( error => {
+        console.log('Error fetching and parsing data', error);
+      });
   }
 
   render() {
     return (
       <div className="bounds">
-        
-        {this.state.courses.map(course => <Course key={course.id} title={course.title} />)}
-        
+
+        {this.state.courses.map(course => <Course key={course.id} title={course.title} id={course.id}/>)}
+
         <div className="grid-33">
           <a className="course--module course--add--module" href="create-course.html">
             <h3 className="course--add--title">
