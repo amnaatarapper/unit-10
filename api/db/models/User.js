@@ -50,10 +50,10 @@ module.exports = (sequelize) => {
             allowNull: false,
             validate: {
               notNull: {
-                msg: 'Please provide a password',
+                msg: 'Please provide your password',
               },
               notEmpty: {
-                msg: 'Please provide a password',
+                msg: 'Please provide your password',
               },
             },
           }

@@ -238,11 +238,11 @@ router.post('/users', [
 	  .exists()
 	  .withMessage('Please provide a value for "lastName"'),
 	check('emailAddress')
-	  .isEmail()
+	  .exists()
 	  .withMessage('Please provide a value for "emailAddress"'),
 	check('password')
 	  .exists()
-	  .withMessage('Please provide a value for "password"'),
+	  .withMessage('Please provide a value for "password"')
   ], async (req, res, next) => {
 
 	const errors = validationResult(req);
