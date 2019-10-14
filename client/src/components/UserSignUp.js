@@ -16,7 +16,21 @@ class UserSignUp extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.submit();
+
+    const {
+      password,
+      confirmPassword
+    } = this.state;
+
+    if (password !== confirmPassword) {
+      this.setState({
+        errors: this.state.errors.concat('Passwords arent matching')
+      })
+    } else {
+      this.submit();
+    }
+    
+    
   }
 
   handleCancel(event) {
@@ -37,9 +51,7 @@ class UserSignUp extends React.Component {
 
   submit = async () => {
 
-    const { context } = this.props;
-  
-    const {
+   const {
       firstName,
       lastName,
       emailAddress,
@@ -54,21 +66,14 @@ class UserSignUp extends React.Component {
       password
     };
 
-    // if state:password == "" || state:password == " "
-    // else if state:password !== state:confirmPassowrd
-    // else push('/')
-
-    if (password === "") {
-      this.setState({
-        errors: this.state.errors.concat('Please provide a password')
-      })
-    } else if (password !== confirmPassword) {
-      this.setState({
-        errors: this.state.errors.concat('Passwords arent matching')
-      })
-    } else {
-      this.props.history.push('/error')
-    }
+    axios.post(`${baseURL.apiBaseUrl}/users`, user)
+    .then(response => {
+      this.props.history.push('/authentificated')
+      console.log(response)
+    }).catch(error => {
+      this.setState({errors: error.response.data.errors})
+      console.error(error.response)
+    })
   }
 
   cancel = () => {

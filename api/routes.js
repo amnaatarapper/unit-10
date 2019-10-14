@@ -233,48 +233,58 @@ router.get('/users', authentification, async (req, res, next) => {
 router.post('/users', [
 	check('firstName')
 	  .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "firstName"'),
 	check('lastName')
 	  .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "lastName"'),
 	check('emailAddress')
 	  .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "emailAddress"'),
 	check('password')
-	  .exists()
+    .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "password"')
   ], async (req, res, next) => {
 
-	const errors = validationResult(req);
-	
-  	if (!errors.isEmpty()) {
-    	res.status(400).json({ errors: errors.array() });
-  	} else {
+	const validation = validationResult(req);
+  
+    if (!validation.isEmpty()) {
+      const errors = validation.array().map(error => error.msg);
+      res.status(400).json({ errors });
+    } else {
 
-		  try {
-	  
-			  let user = req.body;
-			  user.password = bycryptjs.hashSync(req.body.password);
-			  await User.create(user);
-			  res.status(201).location('/').end();
-	  
-		  } catch (error) {
-			  if (error.name === 'SequelizeValidationError') {
-				  const errors = error.errors.map(error => error.message);
-				  console.error('Validation errors: ', errors);
-				  res.status(400).json({ errors });
-			  } else if (error.name === 'SequelizeUniqueConstraintError') {
-				  const errors = error.errors.map(error => error.message);
-				  console.error('Validation errors: ', errors);
-				  res.status(400).json({
-					  "message": "This user already exists"
-				  });
-			  } else {
-				  res.status(400).end();
-				  next(error);
-			  }
-		  }
-	  }
+      try {
+    
+        let user = req.body;
+        user.password = bycryptjs.hashSync(req.body.password);
+        await User.create(user);
+        res.status(201).location('/').end();
+    
+      } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+          const errors = error.errors.map(error => error.message);
+          console.error('Validation errors: ', errors);
+          res.status(400).json({ errors });
+        } else if (error.name === 'SequelizeUniqueConstraintError') {
+          const errors = error.errors.map(error => error.message);
+          console.error('Validation errors: ', errors);
+          res.status(400).json({
+            errors : ["This user already exists"]
+            
+          });
+        } else {
+          res.status(400).end();
+          next(error);
+        }
+      }
+    }
 
 });
 
