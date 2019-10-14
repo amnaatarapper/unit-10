@@ -66,15 +66,24 @@ class UserSignUp extends React.Component {
       password
     };
 
-    axios.post(`${baseURL.apiBaseUrl}/users`, user)
-    .then(response => {
-      this.props.history.push('/authentificated')
-      console.log(response)
-    }).catch(error => {
-      this.setState({errors: error.response.data.errors})
-      console.error(error.response)
+    axios.post(`${baseURL.apiBaseUrl}/users`, user).then(r => {
+      alert('succeeded')
+    }).catch(e => {
+      let errors = this.state.errors;
+
+      if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
+        errors = e.response.data.errors;
+      else
+        errors = ["Server internal error"];
+      
+      this.setState({
+        errors: errors.filter((error, index) => errors.indexOf(error) === index)
+      })
     })
   }
+  
+
+
 
   cancel = () => {
     this.props.history.push('/');
@@ -114,6 +123,7 @@ class UserSignUp extends React.Component {
         );
     }
 }
+
 
 export default UserSignUp;
 
