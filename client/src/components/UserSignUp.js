@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import baseURL from '../baseURL';
 import ErrorsDisplay from './ErrorsDisplay';
 
 class UserSignUp extends React.Component {
@@ -33,7 +35,7 @@ class UserSignUp extends React.Component {
     });
   }
 
-  submit = () => {
+  submit = async () => {
 
     const { context } = this.props;
   
@@ -42,14 +44,31 @@ class UserSignUp extends React.Component {
       lastName,
       emailAddress,
       password,
+      confirmPassword
     } = this.state;
     
     const user = {
       firstName,
       lastName,
       emailAddress,
-      password,
+      password
     };
+
+    // if state:password == "" || state:password == " "
+    // else if state:password !== state:confirmPassowrd
+    // else push('/')
+
+    if (password === "") {
+      this.setState({
+        errors: this.state.errors.concat('Please provide a password')
+      })
+    } else if (password !== confirmPassword) {
+      this.setState({
+        errors: this.state.errors.concat('Passwords arent matching')
+      })
+    } else {
+      this.props.history.push('/error')
+    }
   }
 
   cancel = () => {

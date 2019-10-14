@@ -1,18 +1,12 @@
 import React from 'react';
-import Dataworker from './Dataworker';
+
 
 const Context = React.createContext();
 
 export class Provider extends React.Component {
 
-  constructor() {
-    super();
-    this.dataworker = new Dataworker();
-  }
-
   render() {
     const value = {
-      data: this.dataworker,
     }
 
     return (
