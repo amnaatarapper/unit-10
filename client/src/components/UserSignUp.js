@@ -82,9 +82,6 @@ class UserSignUp extends React.Component {
     })
   }
   
-
-
-
   cancel = () => {
     this.props.history.push('/');
   }

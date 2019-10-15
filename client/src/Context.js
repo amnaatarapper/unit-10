@@ -5,8 +5,36 @@ const Context = React.createContext();
 
 export class Provider extends React.Component {
 
+  state = {
+    authenticatedUser: null
+  }
+
+  signIn = (user) => {
+    if (user !== null) {
+      this.setState(() => {
+        return {
+          authenticatedUser: user,
+        };
+      });
+      console.log(this.state.authenticatedUser)
+    return user;
+    
+    } else {
+      this.props.history.push('/signup');
+    }
+  }
+
+  signOut = () => {
+    this.setState({ authenticatedUser: null });
+  }
+
   render() {
     const value = {
+      authenticatedUser: this.state.authenticatedUser,
+      actions: {
+        signin: this.signIn,
+        signout: this.signOut
+      }
     }
 
     return (

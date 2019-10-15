@@ -1,21 +1,89 @@
 import React from 'react';
+import axios from 'axios';
+import baseURL from '../baseURL';
 
 
 class UserSignIn extends React.Component {
+
+  state = {
+    emailAddress: '',
+    password: ''
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.submit();
+  }
+  
+  handleCancel(event) {
+    event.preventDefault();
+    this.cancel();
+  }
+
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      };
+    });
+  }
+
+  submit = async () => {
+
+   const {
+      emailAddress,
+      password
+    } = this.state;
+
+   
+    axios({
+      url: `${baseURL.apiBaseUrl}/users`, 
+      method: 'get',
+      auth: {
+        username: emailAddress,
+        password: password
+      }
+    }).then(r => {
+      alert('succeeded')
+      console.log(r)
+
+      this.props.context.actions.signin(r.data.user);
+      
+    }).catch(e => {
+      let errors = this.state.errors;
+
+      if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
+        errors = e.response.data.errors;
+      else
+        errors = ["Server internal error"];
+      
+      this.setState({
+        errors: errors.filter((error, index) => errors.indexOf(error) === index)
+      })
+    })
+  }
+
+  cancel = () => {
+    this.props.history.push('/');
+  }
+
     render() {
         return (
-            <div class="bounds">
-        <div class="grid-33 centered signin">
+            <div className="bounds">
+        <div className="grid-33 centered signin">
           <h1>Sign In</h1>
           <div>
-            <form>
-              <div><input id="emailAddress" name="emailAddress" type="text" class="" placeholder="Email Address" value="" /></div>
-              <div><input id="password" name="password" type="password" class="" placeholder="Password" value="" /></div>
-              <div class="grid-100 pad-bottom"><button class="button" type="submit">Sign In</button><button class="button button-secondary">Cancel</button></div>
+            <form onSubmit={this.handleSubmit.bind(this)}>
+              <div><input id="emailAddress" name="emailAddress" type="text" placeholder="Email Address" value={this.state.emailAddress} onChange={this.change}/></div>
+              <div><input id="password" name="password" type="password" placeholder="Password" value={this.state.password} onChange={this.change}/></div>
+              <div className="grid-100 pad-bottom"><button className="button" type="submit">Sign In</button><button className="button button-secondary" onClick={this.cancel}>Cancel</button></div>
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Don't have a user account? <a href="sign-up.html">Click here</a> to sign up!</p>
+          <p>Don't have a user account? <a href="/signup">Click here</a> to sign up!</p>
         </div>
       </div>
         )
