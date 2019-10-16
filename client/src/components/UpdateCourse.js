@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
+import ErrorsDisplay from './ErrorsDisplay';
 
 class UpdateCourse extends React.Component {
 
@@ -69,6 +70,7 @@ class UpdateCourse extends React.Component {
   submit = async () => {
 
    const {
+      id,
       title,
       description,
       estimatedTime,
@@ -79,34 +81,34 @@ class UpdateCourse extends React.Component {
       title,
       description,
       estimatedTime,
-      materialsNeeded
+      materialsNeeded,
+      userId: this.state.user.id
     }
 
-  //   axios({
-  //     url: `${baseURL.apiBaseUrl}/users`, 
-  //     method: 'get',
-  //     auth: {
-  //       username: emailAddress,
-  //       password: password
-  //     }
-  //   }).then(r => {
-  //     alert('succeeded')
-  //     console.log(r)
-
-  //     this.props.context.actions.signin(r.data.user);
+    axios({
+      url: `${baseURL.apiBaseUrl}/courses/${this.state.id}`, 
+      method: 'put',
+      data: course,
+      auth: {
+        username: this.props.context.authenticatedUser.emailAddress,
+        password: this.props.context.authenticatedUser.password
+      }
+    }).then(r => {
+      alert('updated')
+      this.props.history.push(`/courses/${id}`);
       
-  //   }).catch(e => {
-  //     let errors = this.state.errors;
+    }).catch(e => {
+      let errors = this.state.errors;
 
-  //     if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
-  //       errors = e.response.data.errors;
-  //     else
-  //       errors = ["Server internal error"];
+      if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
+        errors = e.response.data.errors;
+      else
+        errors = ["Server internal error"];
       
-  //     this.setState({
-  //       errors: errors.filter((error, index) => errors.indexOf(error) === index)
-  //     })
-  //   })
+      this.setState({
+        errors: errors.filter((error, index) => errors.indexOf(error) === index)
+      })
+    })
   }
 
   cancel = () => {
@@ -131,6 +133,11 @@ class UpdateCourse extends React.Component {
       return (<div className="bounds course--detail">
       <h1>Update Course</h1>
       <div>
+
+        {
+          this.state.errors.length ? <ErrorsDisplay errors={this.state.errors} /> : null
+        }
+
         <form onSubmit={this.handleSubmit.bind(this)}>
           <div className="grid-66">
             <div className="course--header">

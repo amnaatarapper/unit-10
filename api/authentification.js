@@ -24,7 +24,7 @@ const authentification = async (req, res, next) => {
     });
     // If provided credentials password matches the db entry the user is authentificated
     if (user) {
-      const authentificated = bycryptjs.compareSync(credentials.pass, user.password);
+      const authentificated = bycryptjs.compare(credentials.pass, user.password);
       if (authentificated) {
           req.currentUser = user;
           console.log(`Authentication successful for username: ${user.emailAddress}`);

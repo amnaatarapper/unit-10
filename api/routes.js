@@ -137,16 +137,22 @@ router.post('/courses', [
 router.put('/courses/:id', [
 	check('title')
 	  .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "title"'),
 	check('description')
 	  .exists()
+    .isString()
+    .not().isEmpty()
 	  .withMessage('Please provide a value for "description"')
   ], authentification, async (req, res, next) => {
 
-	const errors = validationResult(req);
-  	if (!errors.isEmpty()) {
-    	res.status(400).json({ errors: errors.array() });
-  	} else {
+	const validation = validationResult(req);
+  
+    if (!validation.isEmpty()) {
+      const errors = validation.array().map(error => error.msg);
+      res.status(400).json({ errors });
+    } else {
 
 		  try {
 	  
@@ -211,7 +217,7 @@ router.get('/users', authentification, async (req, res, next) => {
 		try {
 
 			const user = await User.findOne({
-				attributes: {exclude: ["createdAt", "updatedAt", "password"]},
+				attributes: {exclude: ["createdAt", "updatedAt"]},
 				where: {
 				  emailAddress: currentUser.emailAddress
 				}

@@ -31,6 +31,7 @@ const CourseDetailWithContext = withContext(CourseDetail);
 const App = () => {
   return (
     <BrowserRouter>
+    
         <HeaderWithContext />
         
         <Switch>
