@@ -1,12 +1,35 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import baseURL from '../baseURL';
+import { Link, withRouter } from 'react-router-dom';
 
 const ActionBar = (props) => {
+  console.log(props)
+
+ const deleteCourse = async () => {
+
+    await axios({
+      url: `${baseURL.apiBaseUrl}/courses/${props.id}`,
+      method: 'delete',
+      auth: {
+        username: props.username,
+        password: props.password
+      }
+    }).then(r => {
+      alert('Deleted')
+      props.history.push('/');
+    }).catch(e => {
+      props.history.push('/error');
+    })
+    
+
+  }
+
     return (
       <React.Fragment>
-        <Link className="button" to={`${props.id}/update/`}>Update Course</Link><Link className="button" to={`${props.id}/delete/`}>Delete Course</Link>
+        <Link className="button" to={`${props.id}/update/`}>Update Course</Link><button className="button" onClick={deleteCourse}>Delete Course</button>
       </React.Fragment>
     )
 }
 
-export default ActionBar;
+export default withRouter(ActionBar);

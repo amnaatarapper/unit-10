@@ -34,6 +34,8 @@ class CourseDetail extends React.Component {
         });
     }
 
+    
+
 
     render() {
       const {
@@ -58,7 +60,7 @@ class CourseDetail extends React.Component {
             <div className="grid-100">
             <span>
               {
-                (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id}/>
+                (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id} username={this.props.context.authenticatedUser.emailAddress} password={this.props.context.authenticatedUser.password}/>
               }
             </span>
             <Link className="button button-secondary" to="/">Return to List</Link></div>
