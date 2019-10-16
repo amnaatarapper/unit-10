@@ -6,8 +6,8 @@ import { Link, withRouter } from 'react-router-dom';
 const ActionBar = (props) => {
   console.log(props)
 
- const deleteCourse = async () => {
-
+  const deleteCourse = async () => {
+    
     await axios({
       url: `${baseURL.apiBaseUrl}/courses/${props.id}`,
       method: 'delete',
@@ -16,18 +16,17 @@ const ActionBar = (props) => {
         password: props.password
       }
     }).then(r => {
-      alert('Deleted')
       props.history.push('/');
     }).catch(e => {
       props.history.push('/error');
     })
-    
+      
 
   }
 
     return (
       <React.Fragment>
-        <Link className="button" to={`${props.id}/update/`}>Update Course</Link><button className="button" onClick={deleteCourse}>Delete Course</button>
+        <Link className="button" to={`${props.id}/update/`}>Update Course</Link><button className="button" onClick={() => {if(window.confirm('Delete the item?')){deleteCourse()};}}>Delete Course</button>
       </React.Fragment>
     )
 }
