@@ -16,11 +16,8 @@ export class Provider extends React.Component {
           authenticatedUser: user,
         };
       });
-      console.log(this.state.authenticatedUser)
+
     return user;
-    
-    } else {
-      this.props.history.push('/signup');
     }
   }
 

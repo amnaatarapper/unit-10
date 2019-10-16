@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
+import { Redirect } from 'react-router-dom';
 
 
 class UserSignIn extends React.Component {
@@ -47,10 +48,14 @@ class UserSignIn extends React.Component {
         password: password
       }
     }).then(r => {
-      alert('succeeded')
-      console.log(r)
+      alert(`Welcome, ${r.data.user.firstName}!`)
 
       this.props.context.actions.signin(r.data.user);
+
+      if (this.props.location.state)
+        this.props.history.push(this.props.location.state.from.pathname);
+      else
+        this.props.history.goBack();
       
     }).catch(e => {
       let errors = this.state.errors;

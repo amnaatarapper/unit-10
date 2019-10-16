@@ -11,6 +11,7 @@ class UpdateCourse extends React.Component {
       description: '',
       estimatedTime: '',
       materialsNeeded: '',
+      errors: [],
   }
 
   async componentDidMount() {
@@ -42,7 +43,11 @@ class UpdateCourse extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.submit();
+
+    if (this.state.user.id === this.props.context.authenticatedUser.id)
+      this.submit();
+    else 
+      this.setState({ errors: this.state.errors.push('forbidden')});
   }
   
   handleCancel(event) {
@@ -64,12 +69,10 @@ class UpdateCourse extends React.Component {
   submit = async () => {
 
    const {
-      id,
       title,
       description,
       estimatedTime,
       materialsNeeded,
-
     } = this.state;
 
     const course = {
@@ -159,7 +162,8 @@ class UpdateCourse extends React.Component {
               </ul>
             </div>
           </div>
-          <div className="grid-100 pad-bottom"><button className="button" type="submit">Update Course</button><button className="button button-secondary" onClick={this.cancel}>Cancel</button></div>
+          <div className="grid-100 pad-bottom"><button className="button" type="submit" disabled={this.state.user.id !== this.props.context.authenticatedUser.id}>Update Course</button><button className="button button-secondary" onClick={this.cancel}>Cancel</button></div>
+          
         </form>
       </div>
     </div>);

@@ -1,18 +1,22 @@
 import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
-
 import ReactMarkdown from "react-markdown";
+
+import ActionBar from './ActionBar';
 
 class CourseDetail extends React.Component {
 
 
     state= {
         course: [],
-        user: {}
+        user: {},
+        authenticatedUser: null
     }
 
     async componentDidMount() {
+
+      this.setState({authenticatedUser: this.props.context.authenticatedUser})
 
       await axios.get(baseURL.apiBaseUrl + '/courses/' + this.props.match.params.id )
         .then( response => { 
@@ -28,7 +32,6 @@ class CourseDetail extends React.Component {
 
 
     render() {
-
       const {
         id,
         title,
@@ -44,12 +47,10 @@ class CourseDetail extends React.Component {
 
       return (
       <>
-        <div className="actions--bar">
-          <div className="bounds">
-            <div className="grid-100"><span><a className="button" href={`${id}/update/`}>Update Course</a><a className="button" href="#">Delete Course</a></span><a
-                className="button button-secondary" href="/">Return to List</a></div>
-          </div>
-        </div>
+        {
+          (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id}/>
+        }
+
         <div className="bounds course--detail">
           <div className="grid-66">
             <div className="course--header">
@@ -65,21 +66,21 @@ class CourseDetail extends React.Component {
             <div className="course--stats">
             <ul className="course--stats--list">
                         
-                        {
-                            <li className="course--stats--list--item">
-                                <h4>Estimated Time</h4>
-                                <h3>{estimatedTime}</h3>
-                            </li>
-                        }
+              {
+                  <li className="course--stats--list--item">
+                      <h4>Estimated Time</h4>
+                      <h3>{estimatedTime}</h3>
+                  </li>
+              }
 
-                        
-                        {
-                            <li className="course--stats--list--item">
-                                <h4>Materials Needed</h4>
-                                <ReactMarkdown source={materialsNeeded} />
-                            </li>
-                        }
-                    </ul>
+              
+              {
+                  <li className="course--stats--list--item">
+                      <h4>Materials Needed</h4>
+                      <ReactMarkdown source={materialsNeeded} />
+                  </li>
+              }
+            </ul>
             </div>
           </div>
         </div>
