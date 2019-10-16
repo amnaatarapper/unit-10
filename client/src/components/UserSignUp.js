@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
 import ErrorsDisplay from './ErrorsDisplay';
+import { Link } from 'react-router-dom';
 
 class UserSignUp extends React.Component {
 
@@ -56,7 +57,6 @@ class UserSignUp extends React.Component {
       lastName,
       emailAddress,
       password,
-      confirmPassword
     } = this.state;
     
     const user = {
@@ -67,7 +67,10 @@ class UserSignUp extends React.Component {
     };
 
     axios.post(`${baseURL.apiBaseUrl}/users`, user).then(r => {
-      alert('succeeded')
+      alert('Account created !')
+      this.props.context.actions.signin(user);
+      this.props.history.push('/');
+      
     }).catch(e => {
       let errors = this.state.errors;
 
@@ -103,6 +106,7 @@ class UserSignUp extends React.Component {
             {
               this.state.errors.length ? <ErrorsDisplay errors={this.state.errors} /> : null
             }
+            
               <form onSubmit={this.handleSubmit.bind(this)}>
               <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" value={firstName} onChange={this.change} /></div>
               <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" value={lastName} onChange={this.change} /></div>
@@ -114,7 +118,7 @@ class UserSignUp extends React.Component {
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Already have a user account? <a href="sign-in.html">Click here</a> to sign in!</p>
+          <p>Already have a user account? <Link to='signin'>Click here</Link> to sign in!</p>
         </div>
       </div>
         );

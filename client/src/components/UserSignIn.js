@@ -1,8 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
-import { Redirect } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 
 class UserSignIn extends React.Component {
 
@@ -55,7 +54,7 @@ class UserSignIn extends React.Component {
       if (this.props.location.state)
         this.props.history.push(this.props.location.state.from.pathname);
       else
-        this.props.history.goBack();
+        this.props.history.push('/');
       
     }).catch(e => {
       let errors = this.state.errors;
@@ -88,7 +87,7 @@ class UserSignIn extends React.Component {
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Don't have a user account? <a href="/signup">Click here</a> to sign up!</p>
+          <p>Don't have a user account? <Link to="/signup">Click here</Link> to sign up!</p>
         </div>
       </div>
         )

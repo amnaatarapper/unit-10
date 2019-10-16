@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
 import ReactMarkdown from "react-markdown";
+import { Link } from 'react-router-dom';
 
 import ActionBar from './ActionBar';
 
@@ -47,9 +48,19 @@ class CourseDetail extends React.Component {
 
       return (
       <>
-        {
-          (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id}/>
-        }
+        
+
+        <div className="actions--bar">
+          <div className="bounds">
+            <div className="grid-100">
+            <span>
+              {
+                (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id}/>
+              }
+            </span>
+            <Link className="button button-secondary" to="/">Return to List</Link></div>
+          </div>
+        </div>
 
         <div className="bounds course--detail">
           <div className="grid-66">
