@@ -27,7 +27,10 @@ class CourseDetail extends React.Component {
           })
         })
         .catch( error => {
-          console.log('Error fetching and parsing data', error);
+          if (error.response && error.response.status === 404) 
+            this.props.history.push('/404')
+          if (!error.response)
+            this.props.history.push('/error')
         });
     }
 

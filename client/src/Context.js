@@ -9,11 +9,12 @@ export class Provider extends React.Component {
     authenticatedUser: null
   }
 
-  signIn = (user) => {
+  signIn = (user, password) => {
+
     if (user !== null) {
       this.setState(() => {
         return {
-          authenticatedUser: user,
+          authenticatedUser: {...user, password},
         };
       });
 

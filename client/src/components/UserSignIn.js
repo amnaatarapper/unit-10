@@ -49,7 +49,7 @@ class UserSignIn extends React.Component {
     }).then(r => {
       alert(`Welcome, ${r.data.user.firstName}!`)
 
-      this.props.context.actions.signin(r.data.user);
+      this.props.context.actions.signin(r.data.user, password);
 
       if (this.props.location.state)
         this.props.history.push(this.props.location.state.from.pathname);
@@ -62,11 +62,7 @@ class UserSignIn extends React.Component {
       if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
         errors = e.response.data.errors;
       else
-        errors = ["Server internal error"];
-      
-      this.setState({
-        errors: errors.filter((error, index) => errors.indexOf(error) === index)
-      })
+        this.props.history.push('/error')
     })
   }
 

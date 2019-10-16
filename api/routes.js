@@ -1,7 +1,10 @@
 const express = require('express');
 const bycryptjs = require('bcryptjs');
 const authentification = require('./authentification');
-const { check, validationResult } = require('express-validator');
+const {
+	check,
+	validationResult
+} = require('express-validator');
 
 // SEQUELIZE
 const db = require('./db');
@@ -22,7 +25,9 @@ router.get('/courses', async (req, res, next) => {
 	try {
 
 		const courses = await Course.findAll({
-			attributes: { exclude: ["createdAt", "updatedAt"] },
+			attributes: {
+				exclude: ["createdAt", "updatedAt"]
+			},
 			include: [{
 				model: User,
 				attributes: ['id', 'firstName', 'lastName', 'emailAddress']
@@ -31,8 +36,8 @@ router.get('/courses', async (req, res, next) => {
 
 		res.status(200).json({
 			courses
-		}); 
-		
+		});
+
 	} catch (error) {
 		res.status(500).end();
 		next(error);
@@ -45,7 +50,9 @@ router.get('/courses/:id', async (req, res, next) => {
 	try {
 
 		const course = await Course.findOne({
-			attributes: { exclude: ["createdAt", "updatedAt"] },
+			attributes: {
+				exclude: ["createdAt", "updatedAt"]
+			},
 			where: {
 				id: req.params.id
 			},
@@ -73,109 +80,120 @@ router.get('/courses/:id', async (req, res, next) => {
 // VALIDATION
 router.post('/courses', [
 	check('title')
-	  .exists()
-	  .withMessage('Please provide a value for "title"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "title"'),
 	check('description')
-	  .exists()
-	  .withMessage('Please provide a value for "description"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "description"'),
 	check('userId')
-	  .exists()
-	  .withMessage('Please provide a value for "userId"')
-  ], authentification, async (req, res, next) => {
+	.exists()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "userId"'),
+], authentification, async (req, res, next) => {
 
-	const errors = validationResult(req);
-  	if (!errors.isEmpty()) {
-    	res.status(400).json({ errors: errors.array() });
-  	} else {
+	const validation = validationResult(req);
 
-		  if (req.body.title) {
-			  try {
-				  const course = await Course.findOne({
-					  where: {
-						  title: req.body.title
-					  }
-				  });
-	  
-				  if (course) {
-					  res.status(400).json({
-						  "message": "this course already exists"
-					  })
-				  } else {
-					  try {
-	  
-						  const course = req.body;
-						  course.userId = req.currentUser.id;
-						  const _course = await Course.create(course);
-						  res.status(201).location(`/courses/${_course.id}`).end();
-	  
-					  } catch (error) {
-						  if (error.name === 'SequelizeValidationError') {
-							  const errors = error.errors.map(error => error.message);
-							  console.error('Validation errors: ', errors);
-							  res.status(400).json({
-								  errors
-							  });
-						  } else {
-							  res.status(500).end();
-							  next(error);
-						  }
-					  }	 
-				  }
-	  
-			  } catch (error) {
-				  res.status(500).end();
-				  next(error);
-			  }
-		  } else {
-			  res.status(400).end();
-		  }
-	  }
+	if (!validation.isEmpty()) {
+		const errors = validation.array().map(error => error.msg);
+		res.status(400).json({
+			errors
+		});
+	} else {
+
+		if (req.body.title) {
+			try {
+				const course = await Course.findOne({
+					where: {
+						title: req.body.title
+					}
+				});
+
+				if (course) {
+					res.status(400).json({
+						errors: ["This course already exists"]
+					})
+				} else {
+					try {
+
+						const course = req.body;
+						course.userId = req.currentUser.id;
+						const _course = await Course.create(course);
+						res.status(201).json({ courseId: _course.id }).end();
+
+					} catch (error) {
+						if (error.name === 'SequelizeValidationError') {
+							const errors = error.errors.map(error => error.message);
+							console.error('Validation errors: ', errors);
+							res.status(400).json({
+								errors
+							});
+						} else {
+							res.status(500).end();
+							next(error);
+						}
+					}
+				}
+
+			} catch (error) {
+				res.status(500).end();
+				next(error);
+			}
+		} else {
+			res.status(400).end();
+		}
+	}
 });
 
 // Update course
 // VALIDATION
 router.put('/courses/:id', [
 	check('title')
-	  .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "title"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "title"'),
 	check('description')
-	  .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "description"')
-  ], authentification, async (req, res, next) => {
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "description"')
+], authentification, async (req, res, next) => {
 
 	const validation = validationResult(req);
-  
-    if (!validation.isEmpty()) {
-      const errors = validation.array().map(error => error.msg);
-      res.status(400).json({ errors });
-    } else {
 
-		  try {
-	  
-			  const course = await Course.findByPk(req.params.id);
-	  
-			  if (course && course.userId === req.currentUser.id) {
-	  
+	if (!validation.isEmpty()) {
+		const errors = validation.array().map(error => error.msg);
+		res.status(400).json({
+			errors
+		});
+	} else {
+
+		try {
+
+			const course = await Course.findByPk(req.params.id);
+
+			if (course && course.userId === req.currentUser.id) {
+
 				try {
 					await course.update(req.body);
 					res.status(204).end();
 				} catch (error) {
 					res.status(404).end();
 				}
-				
-			  } else {
-				  res.status(400).end();
-			  }
 
-		  } catch (error) {
-			  res.status(500).end();
-			  next(error);
-		  }
-	  }
+			} else {
+				res.status(400).end();
+			}
+
+		} catch (error) {
+			res.status(500).end();
+			next(error);
+		}
+	}
 });
 
 // Delete course
@@ -217,11 +235,13 @@ router.get('/users', authentification, async (req, res, next) => {
 		try {
 
 			const user = await User.findOne({
-				attributes: {exclude: ["createdAt", "updatedAt"]},
+				attributes: {
+					exclude: ["createdAt", "updatedAt", "password"]
+				},
 				where: {
-				  emailAddress: currentUser.emailAddress
+					emailAddress: currentUser.emailAddress
 				}
-			  });
+			});
 
 			res.json({
 				user
@@ -231,66 +251,70 @@ router.get('/users', authentification, async (req, res, next) => {
 			res.status(401).end();
 		}
 	}
-	
+
 });
 
 // Add a new user
 // VALIDATION
 router.post('/users', [
 	check('firstName')
-	  .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "firstName"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "firstName"'),
 	check('lastName')
-	  .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "lastName"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "lastName"'),
 	check('emailAddress')
-	  .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "emailAddress"'),
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "emailAddress"'),
 	check('password')
-    .exists()
-    .isString()
-    .not().isEmpty()
-	  .withMessage('Please provide a value for "password"')
-  ], async (req, res, next) => {
+	.exists()
+	.isString()
+	.not().isEmpty()
+	.withMessage('Please provide a value for "password"')
+], async (req, res, next) => {
 
 	const validation = validationResult(req);
-  
-    if (!validation.isEmpty()) {
-      const errors = validation.array().map(error => error.msg);
-      res.status(400).json({ errors });
-    } else {
 
-      try {
-    
-        let user = req.body;
-        user.password = bycryptjs.hashSync(req.body.password);
-        await User.create(user);
-        res.status(201).location('/').end();
-    
-      } catch (error) {
-        if (error.name === 'SequelizeValidationError') {
-          const errors = error.errors.map(error => error.message);
-          console.error('Validation errors: ', errors);
-          res.status(400).json({ errors });
-        } else if (error.name === 'SequelizeUniqueConstraintError') {
-          const errors = error.errors.map(error => error.message);
-          console.error('Validation errors: ', errors);
-          res.status(400).json({
-            errors : ["This user already exists"]
-            
-          });
-        } else {
-          res.status(400).end();
-          next(error);
-        }
-      }
-    }
+	if (!validation.isEmpty()) {
+		const errors = validation.array().map(error => error.msg);
+		res.status(400).json({
+			errors
+		});
+	} else {
+
+		try {
+
+			let user = req.body;
+			user.password = bycryptjs.hashSync(req.body.password);
+			await User.create(user);
+			res.status(201).location('/').end();
+
+		} catch (error) {
+			if (error.name === 'SequelizeValidationError') {
+				const errors = error.errors.map(error => error.message);
+				console.error('Validation errors: ', errors);
+				res.status(400).json({
+					errors
+				});
+			} else if (error.name === 'SequelizeUniqueConstraintError') {
+				const errors = error.errors.map(error => error.message);
+				console.error('Validation errors: ', errors);
+				res.status(400).json({
+					errors: ["This user already exists"]
+
+				});
+			} else {
+				res.status(400).end();
+				next(error);
+			}
+		}
+	}
 
 });
 
