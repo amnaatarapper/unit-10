@@ -1,6 +1,6 @@
 import React from 'react';
 
-
+// Renders a message in case the api crashes
 const Error = () => {
     return (
         

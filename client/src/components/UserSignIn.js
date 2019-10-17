@@ -4,6 +4,7 @@ import baseURL from '../baseURL';
 import { Link } from 'react-router-dom';
 import ErrorsDisplay from './ErrorsDisplay';
 
+// Log in a user by populating Context's state with the user's data
 class UserSignIn extends React.Component {
 
   state = {

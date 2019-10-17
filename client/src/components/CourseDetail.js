@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import ActionBar from './ActionBar';
 
+
+// Render a course details when mounted
 class CourseDetail extends React.Component {
 
 

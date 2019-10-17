@@ -3,6 +3,7 @@ import axios from 'axios';
 import baseURL from '../baseURL';
 import ErrorsDisplay from './ErrorsDisplay';
 
+// Updates a course in case the owner is currently logged
 class UpdateCourse extends React.Component {
 
   state= {
@@ -15,6 +16,7 @@ class UpdateCourse extends React.Component {
       errors: [],
   }
 
+  // Populates the state with courses/:id data
   async componentDidMount() {
 
     await axios.get(baseURL.apiBaseUrl + '/courses/' + this.props.match.params.id )
@@ -48,7 +50,7 @@ class UpdateCourse extends React.Component {
     if (this.state.user.id === this.props.context.authenticatedUser.id)
       this.submit();
     else 
-      this.setState({ errors: this.state.errors.push('forbidden')});
+      this.setState({ errors: this.state.errors.push('Forbidden')});
   }
   
   handleCancel(event) {
@@ -85,6 +87,7 @@ class UpdateCourse extends React.Component {
       userId: this.state.user.id
     }
 
+    // Postes updated course data to the server(api) then redirects the user to the updated course
     axios({
       url: `${baseURL.apiBaseUrl}/courses/${this.state.id}`, 
       method: 'put',
@@ -107,7 +110,7 @@ class UpdateCourse extends React.Component {
       })
     })
   }
-
+  // Redirect the user back to the course he was willing to update
   cancel = () => {
     this.props.history.push(`/courses/${this.state.id}`);
   }

@@ -4,6 +4,8 @@ import baseURL from '../baseURL';
 import { Link } from 'react-router-dom';
 import Course from './Course';
 
+
+// Renders all courses on the route path ("/")
 class Courses extends React.Component {
 
   state= {

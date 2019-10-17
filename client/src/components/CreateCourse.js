@@ -3,6 +3,8 @@ import axios from 'axios';
 import baseURL from '../baseURL';
 import ErrorsDisplay from './ErrorsDisplay';
 
+
+// Add a new course to the courses list
 class CreateCourse extends React.Component {
 
   state = {
@@ -62,9 +64,10 @@ class CreateCourse extends React.Component {
        
      }).catch(e => {
        let errors = this.state.errors;
- 
+      // In case of a validation error populates errors array on state
        if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
          errors = e.response.data.errors;
+      // In case of a server(api) error redirects the user to ("/error")
        else
         this.props.history.push('/error');
        
@@ -91,6 +94,7 @@ class CreateCourse extends React.Component {
         <div className="bounds course--detail">
             <h1>Create Course</h1>
             <div>
+            // Displays errors to user dynamically 
             {
               this.state.errors.length ? <ErrorsDisplay errors={this.state.errors} /> : null
             }

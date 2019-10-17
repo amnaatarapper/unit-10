@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// Renders "Signup" "Signin" in case no user is logged else
+// Renders a welcome message to the user and "Signout"
 const Header = (props) => {
 
     const { context } = props;

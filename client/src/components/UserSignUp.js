@@ -4,6 +4,8 @@ import baseURL from '../baseURL';
 import ErrorsDisplay from './ErrorsDisplay';
 import { Link } from 'react-router-dom';
 
+
+// Sign up a new user
 class UserSignUp extends React.Component {
 
   state = {
@@ -65,14 +67,14 @@ class UserSignUp extends React.Component {
       emailAddress,
       password
     };
-
+    // Posts new user data to the api
     axios.post(`${baseURL.apiBaseUrl}/users`, user).then(r => {
       
       alert('Account created and signed in!');
 
       const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`);
       const authHeader = `Basic ${encodedCredentials}`;
-
+      // Asks the server(api) for the new user data then populates Context's state
       axios({
         url: `${baseURL.apiBaseUrl}/users`, 
         method: 'get',

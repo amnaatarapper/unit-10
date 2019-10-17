@@ -3,7 +3,10 @@ import axios from 'axios';
 import baseURL from '../baseURL';
 import { Link, withRouter } from 'react-router-dom';
 
+// Renders actions buttons in course detail
 const ActionBar = (props) => {
+
+  // Sends a delete request to the api
     const deleteCourse = async () => {
     
     await axios({
