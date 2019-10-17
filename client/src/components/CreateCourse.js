@@ -94,7 +94,6 @@ class CreateCourse extends React.Component {
         <div className="bounds course--detail">
             <h1>Create Course</h1>
             <div>
-            // Displays errors to user dynamically 
             {
               this.state.errors.length ? <ErrorsDisplay errors={this.state.errors} /> : null
             }
