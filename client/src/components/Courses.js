@@ -17,7 +17,8 @@ class Courses extends React.Component {
         this.setState({ courses: response.data.courses})
       })
       .catch( error => {
-        console.log('Error fetching and parsing data', error);
+        if (!error.response)
+          this.props.history.push('/error');
       });
   }
 

@@ -55,12 +55,9 @@ class CreateCourse extends React.Component {
        url: `${baseURL.apiBaseUrl}/courses`, 
        method: 'post',
        data: course,
-       auth: {
-         username: this.props.context.authenticatedUser.emailAddress,
-         password: this.props.context.authenticatedUser.password
-       }
+       headers: {'Authorization': this.props.context.authenticatedUser.authHeader},
      }).then(r => {
-       alert('Created')
+       alert('The course has been created!')
        this.props.history.push(`/courses/${r.data.courseId}`);
        
      }).catch(e => {
@@ -69,7 +66,7 @@ class CreateCourse extends React.Component {
        if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
          errors = e.response.data.errors;
        else
-         errors = ["Server internal error"];
+        this.props.history.push('/error');
        
        this.setState({
          errors: errors.filter((error, index) => errors.indexOf(error) === index)

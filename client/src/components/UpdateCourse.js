@@ -89,12 +89,9 @@ class UpdateCourse extends React.Component {
       url: `${baseURL.apiBaseUrl}/courses/${this.state.id}`, 
       method: 'put',
       data: course,
-      auth: {
-        username: this.props.context.authenticatedUser.emailAddress,
-        password: this.props.context.authenticatedUser.password
-      }
+      headers: {'Authorization': this.props.context.authenticatedUser.authHeader}
     }).then(r => {
-      alert('updated')
+      alert('The course has been updated!')
       this.props.history.push(`/courses/${id}`);
       
     }).catch(e => {
@@ -103,7 +100,7 @@ class UpdateCourse extends React.Component {
       if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
         errors = e.response.data.errors;
       else
-        errors = ["Server internal error"];
+        this.props.history.push('/error')
       
       this.setState({
         errors: errors.filter((error, index) => errors.indexOf(error) === index)

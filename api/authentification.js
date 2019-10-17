@@ -29,10 +29,10 @@ const authentification = async (req, res, next) => {
           req.currentUser = user;
           console.log(`Authentication successful for username: ${user.emailAddress}`);
       }  else {
-        message = `Authentication failure for username: ${user.emailAddress}`;
+        message = `Wrong username or password`;
       }
     } else {
-      message = `User not found for username: ${credentials.emailAddress}`;
+      message = `User not found`;
     }
   } else {
     message = 'Auth header not found';
@@ -42,7 +42,7 @@ const authentification = async (req, res, next) => {
   if (message) {
     console.warn(message);
     res.status(401).json({
-      errors: ["Acess Denied"]
+      errors: [message]
     });
   } else {
     next();

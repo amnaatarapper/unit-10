@@ -2,12 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import baseURL from '../baseURL';
 import { Link } from 'react-router-dom';
+import ErrorsDisplay from './ErrorsDisplay';
 
 class UserSignIn extends React.Component {
 
   state = {
     emailAddress: '',
-    password: ''
+    password: '',
+    errors: [],
   }
 
   handleSubmit(event) {
@@ -49,7 +51,10 @@ class UserSignIn extends React.Component {
     }).then(r => {
       alert(`Welcome, ${r.data.user.firstName}!`)
 
-      this.props.context.actions.signin(r.data.user, password);
+      const encodedCredentials = btoa(`${emailAddress}:${password}`);
+      const authHeader = `Basic ${encodedCredentials}`;
+
+      this.props.context.actions.signin(r.data.user, authHeader);
 
       if (this.props.location.state)
         this.props.history.push(this.props.location.state.from.pathname);
@@ -63,6 +68,10 @@ class UserSignIn extends React.Component {
         errors = e.response.data.errors;
       else
         this.props.history.push('/error')
+      
+      this.setState({
+        errors: errors.filter((error, index) => errors.indexOf(error) === index)
+      })
     })
   }
 
@@ -72,8 +81,13 @@ class UserSignIn extends React.Component {
 
     render() {
         return (
+          
             <div className="bounds">
         <div className="grid-33 centered signin">
+        {         
+          this.state.errors.length ? <ErrorsDisplay errors={this.state.errors} /> : null
+        }
+
           <h1>Sign In</h1>
           <div>
             <form onSubmit={this.handleSubmit.bind(this)}>

@@ -67,9 +67,23 @@ class UserSignUp extends React.Component {
     };
 
     axios.post(`${baseURL.apiBaseUrl}/users`, user).then(r => {
-      alert('Account created !')
-      this.props.context.actions.signin(user);
-      this.props.history.push('/');
+      
+      alert('Account created and signed in!');
+
+      const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`);
+      const authHeader = `Basic ${encodedCredentials}`;
+
+      axios({
+        url: `${baseURL.apiBaseUrl}/users`, 
+        method: 'get',
+        headers: {'Authorization': authHeader}
+      }).then(response => {
+
+        const newUser = response.data.user;
+        this.props.context.actions.signin(newUser, authHeader);
+        this.props.history.push('/');
+      }).catch(error => this.props.history.push('/error'));
+
       
     }).catch(e => {
       let errors = this.state.errors;
@@ -77,7 +91,7 @@ class UserSignUp extends React.Component {
       if(typeof(e.response) === 'object' && typeof(e.response.data) === 'object' && typeof(e.response.data.errors) === 'object')
         errors = e.response.data.errors;
       else
-        errors = ["Server internal error"];
+        this.props.history.push('/error');
       
       this.setState({
         errors: errors.filter((error, index) => errors.indexOf(error) === index)

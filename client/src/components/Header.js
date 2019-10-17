@@ -14,7 +14,7 @@ const Header = (props) => {
                     {authUser ? (
                     <React.Fragment>
                         <span>Welcome, {authUser.firstName}!</span>
-                        <Link to="/signout" onClick={context.actions.signout}>Sign Out</Link>
+                        <Link to="/signout" onClick={() => {if(window.confirm(`Goodby, ${authUser.firstName} !`)){context.actions.signout()};}}>Sign Out</Link>
                     </React.Fragment>
                     ) : (
                     <React.Fragment>

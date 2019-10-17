@@ -29,13 +29,10 @@ class CourseDetail extends React.Component {
         .catch( error => {
           if (error.response && error.response.status === 404) 
             this.props.history.push('/404')
-          if (!error.response)
+          else
             this.props.history.push('/error')
         });
     }
-
-    
-
 
     render() {
       const {
@@ -60,7 +57,7 @@ class CourseDetail extends React.Component {
             <div className="grid-100">
             <span>
               {
-                (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id} username={this.props.context.authenticatedUser.emailAddress} password={this.props.context.authenticatedUser.password}/>
+                (this.state.authenticatedUser === null || this.state.authenticatedUser.id !== this.state.user.id) ? null : <ActionBar id={id} authHeader={this.props.context.authenticatedUser.authHeader}/>
               }
             </span>
             <Link className="button button-secondary" to="/">Return to List</Link></div>
